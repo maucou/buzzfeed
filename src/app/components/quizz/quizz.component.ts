@@ -52,6 +52,7 @@ export class QuizzComponent implements OnInit {
 
   playerChoose(value: string) {
     this.answer.push(value)
+    this.nextStep()
     console.log(this.answer)
   }
 
@@ -61,7 +62,30 @@ export class QuizzComponent implements OnInit {
     if(this.questionMaxIndex > this.questionIndex) {
       this.questionsSelected = this.questions[this.questionIndex]
     } else {
+      const finalAnswer: string = await this.checkResult(this.answer)
       this.finished = true
+      this.answerSelected =  quizz_questions.results[finalAnswer as keyof typeof quizz_questions.results]
+      //check winning option
+      console.log(this.answer)
     }
+  }
+
+  checkResult(answer:string[]) {
+    const result = answer.reduce((previous, current, i, arr) => {
+      if(
+        arr.filter(item => item === previous).length >
+        arr.filter(item => item === current).length
+      ){
+
+        return previous
+      } else {
+
+        return current
+      }
+
+    })
+
+
+    return result
   }
 }
